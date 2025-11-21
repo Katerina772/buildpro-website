@@ -1,38 +1,158 @@
-.App {
+.navbar.fixed-top {
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.85);
+}
+[data-theme="dark"] .navbar.fixed-top {
+  background: rgba(20, 20, 20, 0.6);
+}
+
+.hero {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-hover {
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
+.portfolio-card {
+  position: relative;
+  overflow: hidden;
+}
+.portfolio-card img {
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+.portfolio-card:hover img {
+  transform: scale(1.07);
+  filter: blur(2px) brightness(0.7);
+}
+.portfolio-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+.portfolio-card:hover .portfolio-overlay {
+  opacity: 1;
+}
+.portfolio-overlay .info {
+  color: white;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.accordion-button:focus {
+  box-shadow: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* testimonials */
+.testimonial-card {
+  border-radius: 12px;
+  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+[data-theme="dark"] .testimonial-card {
+  background: rgba(40, 40, 40, 0.6);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* contact styles */
+.contact-info,
+.contact-form {
+  border-radius: 12px;
+}
+
+/* footer */
+footer {
+  padding: 40px 0;
+  background: #111;
+  color: #eee;
+}
+
+/* FAQ секція */
+.faq-item {
+  background: var(--card-bg);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.faq-item .accordion-button {
+  font-weight: 600;
+  font-family: "Montserrat";
+  padding: 1rem 1.25rem;
+}
+
+.faq-answer {
+  background: var(--card-bg);
+  color: #111;
+  border-radius: 0 0 10px 10px;
+  padding: 1.25rem;
+  font-size: 0.95rem;
+  white-space: pre-line;
+}
+
+/* Темний режим */
+[data-theme="dark"] .faq-answer {
+  background: var(--accent-dark);
+  color: #111;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(100%) brightness(0%);
+}
+
+/* .portfolio-card {
+  overflow: hidden;
+  border-radius: 12px;
+  position: relative;
+}
+
+.portfolio-overlay {
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: 0.3s;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: end;
+}
+.portfolio-card:hover .portfolio-overlay {
+  opacity: 1;
+} */
+
+.accordion-button:not(.collapsed) {
+  color: var(--text);
+  background-color: var(--accent) !important;
+  box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
+    var(--accent-dark) !important;
 }
 
-.App-link {
-  color: #61dafb;
+.ftext-footer {
+  color: #ffffff !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+a {
+  color: #8b8585 !important;
+  text-decoration: underline;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #111 !important;
+  background-color: var(--accent) !important;
+  box-shadow: inset 0 calc(-1 * var(--bs-accordion-border-width)) 0
+    var(--accent-dark) !important;
 }

@@ -1,26 +1,34 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Portfolio from "./pages/Portfolio";
-import Contact from "./pages/Contact";
-import Navbar from "./components/Navbar";
+import React from 'react';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Navbar from './components/Navbar';
+import Hero from './sections/Hero';
+import Services from './sections/Services';
+import Benefits from './sections/Benefits';
+import FAQ from './sections/FAQ';
+import Portfolio from './sections/Portfolio';
+import Testimonials from './sections/Testimonials';
+import Contact from './sections/Contact';
+import Footer from './components/Footer';
+import About from './sections/About';
 
-function App() {
+function App(){
   return (
-    <Router>
+    <div>
       <Navbar />
-      <main style={{ padding: "1rem" }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+      <main>
+        <Hero />
+        <About />
+        <Services />
+        <Benefits />
+        <FAQ />
+        <Portfolio />
+        <Testimonials />
+        <Contact />
       </main>
-    </Router>
-  );
+      <Footer />
+    </div>
+  )
 }
 
 export default App;
