@@ -1,64 +1,3 @@
-// require('dotenv').config();
-// const express = require('express');
-// const cors = require('cors');
-// const db = require('./db');
-
-// const app = express();
-// app.use(cors());
-// app.use(express.json());
-
-// // ====== ROUTES ======
-
-// // 1. Контактна форма
-// app.post('/api/contact', (req, res) => {
-//   const { name, email, phone, message } = req.body;
-//   try {
-//     const stmt = db.prepare(`
-//       INSERT INTO messages (name, email, phone, message)
-//       VALUES (?, ?, ?, ?)
-//     `);
-//     stmt.run(name, email, phone, message);
-//     res.status(201).json({ success: true });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ success: false, error: 'Database error' });
-//   }
-// });
-
-// // 2. Отримати всі повідомлення (наприклад, для адміністратора)
-// app.get('/api/messages', (req, res) => {
-//   try {
-//     const rows = db.prepare(`SELECT * FROM messages ORDER BY created_at DESC`).all();
-//     res.json(rows);
-//   } catch (err) {
-//     res.status(500).json({ error: 'Database error' });
-//   }
-// });
-
-// // 3. Портфоліо — отримати всі проєкти
-// app.get('/api/projects', (req, res) => {
-//   const rows = db.prepare(`SELECT * FROM projects`).all();
-//   res.json(rows);
-// });
-
-// // 4. Додати проєкт (опціонально для адмінки)
-// app.post('/api/projects', (req, res) => {
-//   const { title, description, image } = req.body;
-//   try {
-//     db.prepare(`INSERT INTO projects (title, description, image) VALUES (?, ?, ?)`)
-//       .run(title, description, image);
-//     res.json({ success: true });
-//   } catch (err) {
-//     res.status(500).json({ error: 'Database error' });
-//   }
-// });
-
-// // ====== START SERVER ======
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
-
-
-////ПРавильна друга//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 require("dotenv").config();
 const express = require("express");
@@ -98,28 +37,6 @@ app.get("/api/messages", (req, res) => {
   }
 });
 
-// =======================
-//        PROJECTS
-// =======================
-// app.get("/api/projects", (req, res) => {
-//   const rows = db.prepare("SELECT * FROM projects").all();
-//   res.json(rows);
-// });
-
-// app.post("/api/projects", (req, res) => {
-//   const { title, description, image } = req.body;
-
-//   try {
-//     db.prepare(
-//       `INSERT INTO projects (title, description, image)
-//        VALUES (?, ?, ?)`
-//     ).run(title, description, image);
-
-//     res.json({ success: true });
-//   } catch {
-//     res.status(500).json({ error: "DB error" });
-//   }
-// });
 
 // =======================
 //     SIMPLE ADMIN LOGIN
@@ -160,65 +77,7 @@ app.put("/api/projects/:id", (req, res) => {
   }
 });
 
-// Видалити проєкт
-// app.delete("/api/projects/:id", (req, res) => {
-//   try {
-//     db.prepare(`DELETE FROM projects WHERE id = ?`).run(req.params.id);
-//     res.json({ success: true });
-//   } catch {
-//     res.status(500).json({ error: "DB error" });
-//   }
-// });
 
-// app.post("/api/projects", (req, res) => {
-//   const { title, cat, image, area, duration, type, description } = req.body;
-
-//   try {
-//     db.prepare(`
-//       INSERT INTO projects (title, cat, image, area, duration, type, description)
-//       VALUES (?, ?, ?, ?, ?, ?, ?)
-//     `).run(title, cat, image, area, duration, type, description);
-
-//     res.json({ success: true });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "DB error" });
-//   }
-// });
-
-
-
-// app.put("/api/projects/:id", (req, res) => {
-//   const { title, cat, area, duration, type, description, image } = req.body;
-//   const id = req.params.id;
-
-//   try {
-//     db.prepare(`
-//       UPDATE projects
-//       SET title = ?, cat = ?, area = ?, duration = ?, type = ?, description = ?, image = ?
-//       WHERE id = ?
-//     `).run(title, cat, area, duration, type, description, image, id);
-
-//     res.json({ success: true });
-//   } catch {
-//     res.status(500).json({ error: "DB error" });
-//   }
-// });
-
-
-// app.delete("/api/projects/:id", (req, res) => {
-//   try {
-//     db.prepare("DELETE FROM projects WHERE id = ?").run(req.params.id);
-//     res.json({ success: true });
-//   } catch {
-//     res.status(500).json({ error: "DB error" });
-//   }
-// });
-
-// app.get("/api/reset-projects", (req, res) => {
-//   db.prepare("DELETE FROM projects").run();
-//   res.json({ success: true });
-// });
 
 
 app.get("/api/projects", (req, res) => {
