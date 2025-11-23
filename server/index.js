@@ -101,25 +101,25 @@ app.get("/api/messages", (req, res) => {
 // =======================
 //        PROJECTS
 // =======================
-app.get("/api/projects", (req, res) => {
-  const rows = db.prepare("SELECT * FROM projects").all();
-  res.json(rows);
-});
+// app.get("/api/projects", (req, res) => {
+//   const rows = db.prepare("SELECT * FROM projects").all();
+//   res.json(rows);
+// });
 
-app.post("/api/projects", (req, res) => {
-  const { title, description, image } = req.body;
+// app.post("/api/projects", (req, res) => {
+//   const { title, description, image } = req.body;
 
-  try {
-    db.prepare(
-      `INSERT INTO projects (title, description, image)
-       VALUES (?, ?, ?)`
-    ).run(title, description, image);
+//   try {
+//     db.prepare(
+//       `INSERT INTO projects (title, description, image)
+//        VALUES (?, ?, ?)`
+//     ).run(title, description, image);
 
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: "DB error" });
-  }
-});
+//     res.json({ success: true });
+//   } catch {
+//     res.status(500).json({ error: "DB error" });
+//   }
+// });
 
 // =======================
 //     SIMPLE ADMIN LOGIN
@@ -142,6 +142,131 @@ app.post("/api/admin/login", (req, res) => {
 // =======================
 
 app.use("/admin", express.static(__dirname + "/admin"));
+// Оновити проєкт
+app.put("/api/projects/:id", (req, res) => {
+  const { title, cat, area, duration, type, description, image } = req.body;
+  const id = req.params.id;
+
+  try {
+    db.prepare(`
+      UPDATE projects SET
+        title = ?, cat = ?, area = ?, duration = ?, type = ?, description = ?, image = ?
+      WHERE id = ?
+    `).run(title, cat, area, duration, type, description, image, id);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
+// Видалити проєкт
+// app.delete("/api/projects/:id", (req, res) => {
+//   try {
+//     db.prepare(`DELETE FROM projects WHERE id = ?`).run(req.params.id);
+//     res.json({ success: true });
+//   } catch {
+//     res.status(500).json({ error: "DB error" });
+//   }
+// });
+
+// app.post("/api/projects", (req, res) => {
+//   const { title, cat, image, area, duration, type, description } = req.body;
+
+//   try {
+//     db.prepare(`
+//       INSERT INTO projects (title, cat, image, area, duration, type, description)
+//       VALUES (?, ?, ?, ?, ?, ?, ?)
+//     `).run(title, cat, image, area, duration, type, description);
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "DB error" });
+//   }
+// });
+
+
+
+// app.put("/api/projects/:id", (req, res) => {
+//   const { title, cat, area, duration, type, description, image } = req.body;
+//   const id = req.params.id;
+
+//   try {
+//     db.prepare(`
+//       UPDATE projects
+//       SET title = ?, cat = ?, area = ?, duration = ?, type = ?, description = ?, image = ?
+//       WHERE id = ?
+//     `).run(title, cat, area, duration, type, description, image, id);
+
+//     res.json({ success: true });
+//   } catch {
+//     res.status(500).json({ error: "DB error" });
+//   }
+// });
+
+
+// app.delete("/api/projects/:id", (req, res) => {
+//   try {
+//     db.prepare("DELETE FROM projects WHERE id = ?").run(req.params.id);
+//     res.json({ success: true });
+//   } catch {
+//     res.status(500).json({ error: "DB error" });
+//   }
+// });
+
+// app.get("/api/reset-projects", (req, res) => {
+//   db.prepare("DELETE FROM projects").run();
+//   res.json({ success: true });
+// });
+
+
+app.get("/api/projects", (req, res) => {
+  const rows = db.prepare("SELECT * FROM projects").all();
+  res.json(rows);
+});
+
+app.post("/api/projects", (req, res) => {
+  const { title, cat, area, duration, type, description, image } = req.body;
+
+  try {
+    db.prepare(`
+      INSERT INTO projects (title, cat, area, duration, type, description, image)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(title, cat, area, duration, type, description, image);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "DB error" });
+  }
+});
+app.put("/api/projects/:id", (req, res) => {
+  const { title, cat, area, duration, type, description, image } = req.body;
+  const id = req.params.id;
+
+  try {
+    db.prepare(`
+      UPDATE projects
+      SET title = ?, cat = ?, area = ?, duration = ?, type = ?, description = ?, image = ?
+      WHERE id = ?
+    `).run(title, cat, area, duration, type, description, image, id);
+
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: "DB error" });
+  }
+});
+app.delete("/api/projects/:id", (req, res) => {
+  try {
+    db.prepare("DELETE FROM projects WHERE id = ?").run(req.params.id);
+    res.json({ success: true });
+  } catch {
+    res.status(500).json({ error: "DB error" });
+  }
+});
+
+
 
 // =======================
 //        START SERVER

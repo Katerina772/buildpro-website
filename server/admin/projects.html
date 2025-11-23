@@ -114,6 +114,7 @@
       <a class="active" href="projects.html"
         ><i class="bi bi-hammer me-2"></i> Проєкти</a
       >
+
       <a href="#" id="logoutBtn" class="text-danger mt-5"
         ><i class="bi bi-box-arrow-right me-2"></i> Вийти</a
       >
@@ -131,23 +132,31 @@
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label fw-semibold">Назва</label>
-              <input
-                type="text"
-                class="form-control"
-                id="projTitle"
-                required
-                placeholder="Напр.: Квартира на вул. Лесі Українки"
-              />
+              <input type="text" class="form-control" id="projTitle" required />
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold">Зображення (URL)</label>
-              <input
-                type="text"
-                class="form-control"
-                id="projImage"
-                placeholder="/images/port1.jpg"
-              />
+              <label class="form-label fw-semibold">Категорія</label>
+              <select class="form-control" id="projCat" required>
+                <option value="cap">Капітальний ремонт</option>
+                <option value="full">Повне оновлення</option>
+                <option value="design">Дизайн інтер’єру</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Площа</label>
+              <input type="text" class="form-control" id="projArea" />
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Тривалість</label>
+              <input type="text" class="form-control" id="projDuration" />
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Тип робіт</label>
+              <input type="text" class="form-control" id="projType" />
             </div>
 
             <div class="col-12">
@@ -157,8 +166,12 @@
                 class="form-control"
                 rows="3"
                 required
-                placeholder="Опишіть проєкт..."
               ></textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold">Зображення (URL)</label>
+              <input type="text" class="form-control" id="projImage" />
             </div>
 
             <div class="col-12 text-end">
@@ -170,7 +183,7 @@
         <p id="addStatus" class="mt-3 fw-semibold text-success"></p>
       </div>
 
-      <!-- ====== ТАБЛИЦЯ ПРОЄКТІВ ====== -->
+      <!-- ====== ПРОЄКТИ ====== -->
       <h4 class="fw-bold mb-3">Усі проєкти</h4>
 
       <table class="table table-bordered table-hover align-middle">
@@ -178,7 +191,9 @@
           <tr>
             <th>ID</th>
             <th>Назва</th>
-            <th>Фото</th>
+            <th>Категорія</th>
+
+            <th width="80">Фото</th>
             <th width="180">Дії</th>
           </tr>
         </thead>
@@ -186,23 +201,49 @@
       </table>
     </div>
 
-    <!-- ========== MODAL VIEW PROJECT ========== -->
+    <!-- ========== MODAL: VIEW / EDIT PROJECT ========== -->
     <div class="modal fade" id="projectModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Перегляд проєкту</h5>
+            <h5 class="modal-title">Редагування проєкту</h5>
             <button class="btn-close" data-bs-dismiss="modal"></button>
           </div>
 
           <div class="modal-body">
-            <img id="pImage" class="img-fluid mb-3 rounded" />
-            <h5 id="pTitle"></h5>
-            <p id="pDesc" class="mt-2"></p>
+            <form id="editProjectForm">
+              <input type="hidden" id="editId" />
+
+              <label class="form-label fw-semibold mt-2">Назва</label>
+              <input class="form-control" id="editTitle" />
+
+              <label class="form-label fw-semibold mt-2">Категорія</label>
+              <select class="form-control" id="editCat">
+                <option value="cap">Капітальний ремонт</option>
+                <option value="full">Повне оновлення</option>
+                <option value="design">Дизайн інтер’єру</option>
+              </select>
+
+              <label class="form-label fw-semibold mt-2">Площа</label>
+              <input class="form-control" id="editArea" />
+
+              <label class="form-label fw-semibold mt-2">Тривалість</label>
+              <input class="form-control" id="editDuration" />
+
+              <label class="form-label fw-semibold mt-2">Тип робіт</label>
+              <input class="form-control" id="editType" />
+
+              <label class="form-label fw-semibold mt-2">Опис</label>
+              <textarea class="form-control" id="editDescription"></textarea>
+
+              <label class="form-label fw-semibold mt-2">Фото (URL)</label>
+              <input class="form-control" id="editImage" />
+            </form>
           </div>
 
           <div class="modal-footer">
-            <button class="btn btn-accent" data-bs-dismiss="modal">
+            <button class="btn btn-accent" id="saveEditBtn">Зберегти</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
               Закрити
             </button>
           </div>
@@ -214,49 +255,82 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      // ======== JWT CHECK ========
       const token = localStorage.getItem("token");
       if (!token) window.location.href = "/admin/login.html";
 
-      // ======== LOAD PROJECTS ========
+      // ===== LOAD PROJECTS =====
       async function loadProjects() {
         const res = await fetch("http://localhost:5000/api/projects");
         const projects = await res.json();
 
-        const table = document.getElementById("projTableBody");
-        table.innerHTML = "";
+        const body = document.getElementById("projTableBody");
+        body.innerHTML = "";
 
         projects.forEach((p) => {
           const tr = document.createElement("tr");
 
           tr.innerHTML = `
-        <td>${p.id}</td>
-        <td>${p.title}</td>
-        <td><img src="${p.image}" style="width:80px; height:60px; object-fit:cover;" class="rounded"></td>
-        <td>
-          <button class="btn btn-sm btn-accent me-2" onclick="viewProject(${p.id})">
-            <i class="bi bi-eye"></i>
-          </button>
-          <button class="btn btn-sm btn-danger" onclick="deleteProject(${p.id})">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      `;
-          table.appendChild(tr);
+            <td>${p.id}</td>
+            <td>${p.title}</td>
+            <td>${p.cat}</td>
+            <td><img src="${p.image}" class="rounded" style="width:70px;height:50px;object-fit:cover;"></td>
+            <td>
+              <button class="btn btn-sm btn-accent me-1" onclick="editProject(${p.id})">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="deleteProject(${p.id})">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          `;
+
+          body.appendChild(tr);
         });
       }
 
       loadProjects();
 
-      // ======== VIEW PROJECT ========
-      async function viewProject(id) {
+      // ===== ADD PROJECT =====
+      document
+        .getElementById("addProjectForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const project = {
+            title: projTitle.value,
+            cat: projCat.value,
+            area: projArea.value,
+            duration: projDuration.value,
+            type: projType.value,
+            description: projDesc.value,
+            image: projImage.value,
+          };
+
+          await fetch("http://localhost:5000/api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(project),
+          });
+
+          addStatus.textContent = "Проєкт додано!";
+          e.target.reset();
+          loadProjects();
+        });
+
+      // ===== EDIT PROJECT =====
+      async function editProject(id) {
         const res = await fetch("http://localhost:5000/api/projects");
         const list = await res.json();
         const p = list.find((x) => x.id === id);
 
-        document.getElementById("pTitle").textContent = p.title;
-        document.getElementById("pDesc").textContent = p.description;
-        document.getElementById("pImage").src = p.image;
+        editId.value = p.id;
+        editTitle.value = p.title;
+        editCat.value = p.cat;
+        editArea.value = p.area;
+        editDuration.value = p.duration;
+        editType.value = p.type;
+        editDescription.value = p.description;
+        editImage.value = p.image;
 
         const modal = new bootstrap.Modal(
           document.getElementById("projectModal")
@@ -264,39 +338,41 @@
         modal.show();
       }
 
-      // ======== ADD PROJECT ========
       document
-        .getElementById("addProjectForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+        .getElementById("saveEditBtn")
+        .addEventListener("click", async () => {
+          const id = editId.value;
 
-          const title = document.getElementById("projTitle").value;
-          const description = document.getElementById("projDesc").value;
-          const image = document.getElementById("projImage").value;
+          const updated = {
+            title: editTitle.value,
+            cat: editCat.value,
+            area: editArea.value,
+            duration: editDuration.value,
+            type: editType.value,
+            description: editDescription.value,
+            image: editImage.value,
+          };
 
-          await fetch("http://localhost:5000/api/projects", {
-            method: "POST",
+          await fetch(`http://localhost:5000/api/projects/${id}`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, description, image }),
+            body: JSON.stringify(updated),
           });
 
-          document.getElementById("addStatus").textContent = "Проєкт додано!";
-          e.target.reset();
           loadProjects();
+          document.querySelector("#projectModal .btn-close").click();
         });
 
-      // ======== DELETE PROJECT ========
+      // ===== DELETE =====
       async function deleteProject(id) {
         if (!confirm("Видалити цей проєкт?")) return;
-
         await fetch(`http://localhost:5000/api/projects/${id}`, {
           method: "DELETE",
         });
-
         loadProjects();
       }
 
-      // ======== LOGOUT ========
+      // ===== LOGOUT =====
       document.getElementById("logoutBtn").addEventListener("click", () => {
         localStorage.removeItem("token");
         window.location.href = "/admin/login.html";

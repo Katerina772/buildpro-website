@@ -17,9 +17,15 @@ db.prepare(`
   CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
+    cat TEXT,
+    area TEXT,
+    duration TEXT,
+    type TEXT,
     description TEXT,
     image TEXT
   )
 `).run();
+
+
 
 module.exports = db;
